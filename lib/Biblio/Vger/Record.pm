@@ -4,6 +4,9 @@ use Biblio::Vger;
 
 sub type { die "Abstract base class" }
 
+sub id { @_ > 1 ? $_[0]->{'id'} = $_[1] : $_[0]->{'id'} }
+sub vger { @_ > 1 ? $_[0]->{'vger'} = $_[1] : $_[0]->{'vger'} }
+
 sub new {
     my $cls = shift;
     die "Abstract base class" if $cls eq __PACKAGE__;
@@ -11,11 +14,11 @@ sub new {
     bless { @_ }, $cls;
 }
 
-sub id { @_ > 1 ? $_[0]->{'id'} = $_[1] : $_[0]->{'id'} }
-
 sub marc {
     my ($self) = @_;
-    $self->{'marc'} ||= Biblio::Vger->marc($self->type => $self->id);
+    return $self->{'marc'} if exists $self->{'marc'};
+    ($self->{'marc'}) = $self->vger->marc($self->type => $self->id);
+    return $self->{'marc'};
 }
 
 1;
