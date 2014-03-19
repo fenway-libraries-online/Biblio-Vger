@@ -1,0 +1,28 @@
+# Sample config file for Biblio::Vger::DBI
+
+default {
+    option RaiseError on
+    sid = VGER
+}
+
+# Default database: xxxdb (read-only)
+database xxxdb {
+    user     = ro_xxxdb
+    password = ********
+}
+
+database xxxdb/rw {
+    user     = xxxdb
+    password = ********
+}
+
+database traindb {
+    user     = traindb
+    password = ********
+}
+
+# Aliases
+database xxxdb/ro = xxxdb
+database VGER     = xxxdb
+database VGER/rw  = xxxdb/rw
+database demo     = traindb
