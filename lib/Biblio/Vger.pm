@@ -50,17 +50,17 @@ sub marc {
     $type =~ /^(bib|mfhd|auth)/i or die;
     $type = lc $1;
     my @marc;
-    my $dbh = $self->dbh;
-    my $sth = $self->{"sth:marc:$type"} ||= $dbh->prepare("SELECT record_segment FROM ${type}_data WHERE ${type}_id = ? ORDER BY seqnum");
+    my $query = $self->{"query:marc:$type"} ||= $self->query("SELECT record_segment FROM ${type}_data WHERE ${type}_id = ? ORDER BY seqnum");
     foreach $id (@ids) {
-        my $result = $sth->execute($id)
-            || die sprintf "Unexpected error %s fetching %s record %s: %s", $sth->err, $type, $id, $sth->errstr;
+        my $sth = $query->execute($id);
         my ($segments) = $sth->fetchall_arrayref;
-        $segments
-            || die sprintf "No such %s record: %s", $type, $id;
+        $segments || die sprintf "No such %s record: %s", $type, $id;
         push @marc, join('', map { @$_ } @$segments);
     }
-    return @marc;
+    return @marc if wantarray;
+    return if !@marc;
+    die "Multiple MARC records retrieved" if @marc > 1;
+    return $marc[0];
 }
 
 1;
