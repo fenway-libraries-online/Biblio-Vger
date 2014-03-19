@@ -13,23 +13,17 @@ sub new {
 
 sub bib {
     my $self = shift;
-    die if @_ != 1;
-    my ($marc) = $self->marc('bib' => shift);
-    return $marc;
+    Biblio::Vger::Bib->new(@_);
 }
 
 sub mfhd {
     my $self = shift;
-    die if @_ != 1;
-    my ($marc) = $self->marc('mfhd' => shift);
-    return $marc;
+    Biblio::Vger::Mfhd->new(@_);
 }
 
 sub auth {
     my $self = shift;
-    die if @_ != 1;
-    my ($marc) = $self->marc('auth' => shift);
-    return $marc;
+    Biblio::Vger::Auth->new(@_);
 }
 
 sub dbh {
@@ -57,3 +51,19 @@ sub marc {
 
 1;
 
+=pod
+
+=head1 NAME
+
+Biblio::Vger - Voyager ILS backend access
+
+=head1 SYNOPSIS
+
+    use Biblio::Vger;
+    $bib = Biblio::Vger->bib($bib_id);
+    $marc = $bib->marc;
+    @mfhds = $bib->mfhds;
+    $mfhd = Biblio::Vger->mfhd($mfhd_id);
+    $bib = $mfhd->bib;
+
+=cut

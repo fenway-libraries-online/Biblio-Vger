@@ -1,0 +1,20 @@
+Biblio::Vger provides access to the backend data of a Voyager ILS -- bib
+records, MFHDs, etc.
+
+To build it, you can probably do this:
+
+    PERL=/m1/shared/bin/perl
+    $PERL Build.PL
+    $PERL Build
+
+Installation depends on how comfortable you are as root on a Voyager production box.  The safest approach is just to copy the whole thing into a directory within the voyager user's home directory, e.g.:
+
+    [log in as voyager, or log in as root and become voyager]
+    $ mkdir -p ~/lib/perl5lib
+    $ cp -a lib ~/lib/perl5lib
+
+Then add this line to any scripts that rely on these modules:
+
+    use lib "$ENV{HOME}/lib/perl5lib";
+
+

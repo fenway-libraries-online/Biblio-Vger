@@ -1,0 +1,12 @@
+.*\.old$
+pm_to_blib
+blib
+^MANIFEST$
+^Makefile$
+^Build$
+^\.git(/|$)
+^_build(/|$)
+^\.gitignore$
+^MYMETA\.yml$
+^MYMETA\.json$
+^.*.bak
