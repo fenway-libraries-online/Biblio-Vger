@@ -4,7 +4,9 @@ use Biblio::Vger::DBI;
 use Biblio::Vger::Query;
 use Biblio::Vger::Bib;
 use Biblio::Vger::Mfhd;
+use Biblio::Vger::Item;
 use Biblio::Vger::Auth;
+use Biblio::Vger::Location;
 
 use vars qw($VERSION);
 
@@ -33,6 +35,12 @@ sub mfhd {
     Biblio::Vger::Mfhd->new(@_, 'vger' => $self);
 }
 
+sub item {
+    my $self = shift;
+    $self = $self->new if !ref $self;
+    Biblio::Vger::Item->new(@_, 'vger' => $self);
+}
+
 sub auth {
     my $self = shift;
     $self = $self->new if !ref $self;
@@ -42,7 +50,8 @@ sub auth {
 sub dbh {
     my $self = shift;
     $self = $self->new if !ref $self;
-    return $self->{'dbh'} ||= Biblio::Vger::DBI->connect(@_) || die;
+    my %opt = ( @_, 'options' => {'FetchHashKeyName' => 'NAME_lc'} );
+    return $self->{'dbh'} ||= Biblio::Vger::DBI->connect(%opt) || die;
 }
 
 sub marc {
@@ -61,6 +70,26 @@ sub marc {
     return if !@marc;
     die "Multiple MARC records retrieved" if @marc > 1;
     return $marc[0];
+}
+
+sub bib_iter {
+    my ($self, $begin, $end) = @_;
+    $self = $self->new if !ref $self;
+    my $query = $self->query('SELECT bib_id FROM bib_master WHERE bib_id BETWEEN ? AND ?');
+    my $sth = $query->execute($begin, $end);
+    return sub {
+        if (my ($bib_id) = $sth->fetchrow_array) {
+            return $self->bib($bib_id);
+        }
+        return;
+    }
+}
+
+sub locations {
+    my ($self) = @_;
+    my $query = $self->query('SELECT location_id AS id FROM location');
+    my $sth = $query->execute;
+    return map { Biblio::Vger::Location->new(%$_, 'vger' => $self) } @{ $sth->fetchall_arrayref({}) };
 }
 
 1;

@@ -1,5 +1,8 @@
 package Biblio::Vger::Record;
 
+use strict;
+use warnings;
+
 use Biblio::Vger;
 
 sub type { die "Abstract base class" }
