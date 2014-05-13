@@ -7,7 +7,6 @@ my $b = Module::Build->new(
     'license'            => 'perl',
     'requires'           => {
         'Getopt::Long'       => 0,
-        'DBD::Oracle'        => 0,
         'DBI'                => 0,
     },
     'build_requires'     => {
