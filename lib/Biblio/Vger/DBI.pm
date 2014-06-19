@@ -27,6 +27,7 @@ sub connect {
     unshift @_, 'database' if @_ == 1;
     my %arg = @_;
     my %opt = ( %default_options, %{ $arg{'options'} || {} } );
+    $database = $arg{'database'} if $arg{'database'}
     set_env("$root/$database/ini/voyager.env");
     my %conf;
     my ($config_file) = glob($arg{'config_file'} || '~/.vgerdbirc');
