@@ -103,10 +103,35 @@ Biblio::Vger - Voyager ILS backend access
 =head1 SYNOPSIS
 
     use Biblio::Vger;
-    $bib = Biblio::Vger->bib($bib_id);
-    $marc = $bib->marc;
+
+    $dbh   = Biblio::Vger->dbh(%options);
+
+    $bib   = Biblio::Vger->bib($bib_id);
+    $marc  = $bib->marc;
     @mfhds = $bib->mfhds;
-    $mfhd = Biblio::Vger->mfhd($mfhd_id);
-    $bib = $mfhd->bib;
+
+    $mfhd  = Biblio::Vger->mfhd($mfhd_id);
+    $bib   = $mfhd->bib;
+
+=head1 DESCRIPTION
+
+Biblio::Vger provides convenient object-oriented access to the data in a
+Voyager ILS database.
+
+=head1 AUTHOR
+
+Paul Hoffman <paul@flo.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2014 by Fenway Libraries Online.
+
+This library is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+Biblio::Vger::DBI, Biblio::Vger::Query, Biblio::Vger::Bib, Biblio::Vger::Mfhd,
+Biblio::Vger::Item, Biblio::Vger::Auth, Biblio::Vger::Location
 
 =cut
