@@ -8,36 +8,36 @@ use File::Glob qw(glob);
 
 use vars qw($root $database);
 
+my %default_options = (
+    'RaiseError' => 1,
+    'FetchHashKeyName' => 'NAME_lc',
+);
+
 sub import {
     my $cls = shift;
     unshift @_, 'database' if @_ == 1;
     my %arg = @_;
     $root     = $arg{'root'} || $ENV{'VOYAGER'} || '/m1/voyager';
-    $database = $arg{'database'} || $ENV{'DATABASE'} || 'xxxdb';
+    $database = $arg{'database'} || $ENV{'DATABASE'};
 }
-
-my %default_options = (
-    'RaiseError' => 1,
-);
-
-# --- Nothing below here needs to be configured
 
 sub connect {
     my $cls = shift;
-    unshift @_, 'database' if @_ == 1;
+    unshift @_, 'database' if @_ % 2;
     my %arg = @_;
-    my %opt = ( %default_options, %{ $arg{'options'} || {} } );
-    $database = $arg{'database'} if $arg{'database'};
-    set_env("$root/$database/ini/voyager.env");
     my %conf;
     my ($config_file) = glob($arg{'config_file'} || '~/.vgerdbirc');
     if (defined $config_file && -f $config_file) {
         %conf = ( read_config($config_file), %arg );
     }
-    my $db       = $arg{'database'} || $database || $conf{'default'};
+    $database = $arg{'database'} if $arg{'database'};
+    $database ||= $conf{'database'};
+    set_env("$root/$database/ini/voyager.env");
+    my $db       = $database || $conf{'default'};
     my $user     = $conf{$db}{'user'};
     my $password = $conf{$db}{'password'};
     my $dbid     = $conf{$db}{'sid'} || $ENV{'ORACLE_SID'} || $db;
+    my %opt = ( %default_options, %{ $arg{'options'} || {} } );
     DBI->connect("dbi:Oracle:$dbid", $user, $password, \%opt);
 }
 
